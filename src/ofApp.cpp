@@ -7,6 +7,7 @@
 // TO DO:
 //
 // Apply the FFT values to the rectLength in state 0 and to the particles in state 1
+// Make the particles move in 3D space
 // Set up the play button animation by looping the images
 // Set up instructions
 // Write a music piece for the visualizer
@@ -52,7 +53,7 @@ void ofApp::setup(){
     //}
     
     //----------- Creating the circle of rectangles ------------
-    
+ 
 
         circle = new circleClass(x, y, circleRadius, numRects, rectWidth, rectLength); // creating the circle object
     
@@ -94,7 +95,7 @@ void ofApp::draw(){
              if(play == true) { // if the pley button has been pressed
                  
              glPushMatrix();
-             ofTranslate(100,175); // translate the array of rectangles to this position
+             ofTranslate(150,175); // translate the array of rectangles to this position
              
              for(int i = 0; i < 30; i++) { // making 30 rectangles
             
