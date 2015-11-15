@@ -94,7 +94,7 @@ void ofApp::draw(){
              if(play == true) { // if the pley button has been pressed
                  
              glPushMatrix();
-             ofTranslate(100,200); // translate the array of rectangles to this position
+             ofTranslate(100,175); // translate the array of rectangles to this position
              
              for(int i = 0; i < 30; i++) { // making 30 rectangles
             
@@ -107,7 +107,7 @@ void ofApp::draw(){
                  
              }
              
-             mute.draw(260, 455); // mute button
+             mute.draw(260, 500); // mute button
              ofDrawBitmapString("Music Visualizer", 540, 40); // draw text
              ofDrawBitmapString("Created by johan Gelinder", 510, 60); // draw text
              
@@ -129,7 +129,6 @@ void ofApp::draw(){
              
             f = A*sin(e * ofGetElapsedTimeMillis() + 4); // will move the arrow up and down
             ofTranslate(0, 0+f); // adding f to y will make it move up and down using sin()
-             
             stateButton.draw(ofGetWidth()/2-25,635); // drawing the state swtich button
             ofPopMatrix();
             
@@ -161,28 +160,28 @@ void ofApp::draw(){
             ofDrawBitmapString("Name", 1110, 365);
             
             // song picker
-            ofDrawRectRounded(1110,455, 0, 30, 8, 4);
-            ofDrawRectRounded(1110, 475, 0, 30, 8, 4);
+            ofDrawRectRounded(1110,450, 0, 30, 8, 4);
+            ofDrawRectRounded(1110, 470, 0, 30, 8, 4);
             
             // volume slider
-            ofLine(150, 400, 150, 550);
-            ofDrawRectRounded(135,420, 30, 10,4);
-            ofDrawBitmapString("Volume", 125, 570);
+            ofLine(150, 450, 150, 600);
+            ofDrawRectRounded(135,470, 30, 10,4);
+            ofDrawBitmapString("Volume", 125, 620);
             
             //instructions
-            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 400);
-            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 420);
-            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 440);
             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 460);
             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 480);
             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 500);
             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 520);
             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 540);
             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 560);
+            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 580);
+            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 600);
+          
              
             // instruction slider
-            ofLine(1060, 400, 1060, 550);
-            ofDrawRectRounded(1055,420, 10, 10,2);
+            ofLine(1060, 450, 1060, 600);
+            ofDrawRectRounded(1055,470, 10, 10,2);
             
             playButton[index].draw(ofGetWidth()/2-20, 325); // drawing the play button
             
@@ -194,6 +193,12 @@ void ofApp::draw(){
         case 1:
              
             image2.draw(0,0); // draw background image
+             
+             ofPushMatrix();
+             f = A*sin(e * ofGetElapsedTimeMillis() + 4); // will move the arrow up and down
+             ofTranslate(0, 0+f); // adding f to y will make it move up and down using sin()
+             stateButton.draw(ofGetWidth()/2-25,635); // drawing the state swtich button
+             ofPopMatrix();
             
             for(int i = 0; i < Nums; i ++) { // looping through all the particles
                 
@@ -278,6 +283,10 @@ void ofApp::mousePressed(int x, int y, int button){
        //state = 1;
         stateSwitch = !stateSwitch; // click in the arrow button to start the animation and then switch state
         
+        if(state == 1 ) {
+            state = 0;
+            stateSwitch = false;
+        }
    }
     
       if(mouseX >= 585 && mouseX <= 625 && mouseY >= 335 && mouseY <= 365 ) {
