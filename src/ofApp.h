@@ -11,6 +11,7 @@
 class ofApp : public ofBaseApp{
 
 	public:
+    
 		void setup();
 		void update();
 		void draw();
@@ -31,9 +32,10 @@ class ofApp : public ofBaseApp{
         ofImage image2,mute;
         vector<ofImage> playButton;
         ofImage stateButton;
+    
         int index;
         bool play = false;
-        int state = 0;
+        int state = 0; // first state
         float rotY = PI / 4;
         float rate = 0.5;
         bool stateSwitch;
@@ -42,12 +44,10 @@ class ofApp : public ofBaseApp{
         float e = 0.005;
         float rLine = 800;
         float lLine = 400;
-    
         int circleRadius = 100;
         int numRects = 100;
         int rectLength = 40;
         float rectWidth = 2;
-    
         float x = ofGetWidth()/2;
         float y = ofGetHeight()/2;
     
@@ -56,8 +56,6 @@ class ofApp : public ofBaseApp{
         Particles *part[Nums]; // creating a pointer ( a refrence in memory) for each object
     
         void audioOut(float * output, int bufferSize, int nChannels);
-   // void audioIn(float * input, int bufferSize, int nChannels);
-    
     
         int bufferSize;
         int sampleRate;
@@ -65,14 +63,7 @@ class ofApp : public ofBaseApp{
         maxiSample sound;
         double sample;
         double outputs[2];
-   // ofxMaxiFFT fft;
-   // ofxMaxiFFTOctaveAnalyzer oct
-    
-   // vector <float> lAudio;
-   // vector <float> rAudio;
+        ofxMaxiFFT fft;
+        ofxMaxiFFTOctaveAnalyzer oct;
 
-    
-    
-
-		
 };

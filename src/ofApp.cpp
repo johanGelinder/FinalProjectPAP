@@ -1,23 +1,21 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
+// Created by Johan Gelinder
 // All images is royalty free from www.pixabay.com
 
 // TO DO:
 //
-// Get FFT values from song input using ofxMaxim
-// Apply the FFT values to the rectLength in dayMode and to the circles in nightMode
+// Apply the FFT values to the rectLength in state 0 and to the particles in state 1
 // Set up the play button animation by looping the images
-// Set up instructions in dayMode
+// Set up instructions
 // Write a music piece for the visualizer
-// Switch state button
-// rotate the circle of rectangles around it own axis when the switch state button is pressed
 // Apply fade in and fade out from states
-// Have a line that shows the length of the song
-// choose your own song ( maybe )
-// volume bar?
-// mute button
-//
+// ( choose your own song )
+// Fix animation for the stateSwitch button
+// Load new fonts
+// Make sure that the sliders work
+// See if I can add a glow filter on the particles in state 1
 //
 
 void ofApp::setup(){
@@ -25,8 +23,8 @@ void ofApp::setup(){
     sampleRate = 44100; // initializing the sampleRate
     bufferSize = 512; // initializing the bufferSize
     
-    //fft.setup(1024, 512, 256);
-    //oct.setup(44100, 1024, 10);
+    fft.setup(1024, 512, 256);
+    oct.setup(44100, 1024, 10);
     
     ofxMaxiSettings::setup(sampleRate, 2, bufferSize);
     
@@ -66,7 +64,6 @@ void ofApp::setup(){
         
         // create the particles randomly across the canvas and with a random size diamter of the particles
         part[i] = new Particles(ofRandom(500, 700), ofRandom(250,450), ofRandom(1,6));
-        
     }
     
     ofSoundStreamSetup(2,2,this, sampleRate, bufferSize, 4);
@@ -86,53 +83,68 @@ void ofApp::update(){
 
 void ofApp::draw(){
     
-    
-
-    //std:: cout << mouseY << std::endl;
-    
-    switch (state) {
-            
 /*------------------------ Menu Visualizer -----------------------------------*/
+    
+     switch (state) {
             
         case 0: 
             
             image.draw(0,0); // drawing the background image
-            mute.draw(260, 455); // mute button
+             
+             if(play == true) { // if the pley button has been pressed
+                 
+             glPushMatrix();
+             ofTranslate(100,200); // translate the array of rectangles to this position
+             
+             for(int i = 0; i < 30; i++) { // making 30 rectangles
+            
+                 ofPushStyle();
+                 ofSetColor(255); // white colour
+                 ofRect(i * 5, 0, 2, -oct.averages[i]); // drawing rectangles and having the fft values from the song change the height of the rectangles
+                 ofPopStyle();
+             }
+             glPopMatrix();
+                 
+             }
+             
+             mute.draw(260, 455); // mute button
              ofDrawBitmapString("Music Visualizer", 540, 40); // draw text
              ofDrawBitmapString("Created by johan Gelinder", 510, 60); // draw text
+             
+             if(lLine <= 100){ // if lLine is less or equal to 100
+                 
+                 state = 1; // switch states
+                 stateSwitch = false; // setting the stateSwitch boolean back to false
+                 
+             }
+             
+             if(state == 1){ // if the state is changed then set the values back
+                 
+                 // original position
+                 lLine = 400;
+                 rLine = 800;
+             }
             
             ofPushMatrix();
+             
             f = A*sin(e * ofGetElapsedTimeMillis() + 4); // will move the arrow up and down
-            ofTranslate(0, 0+f);
+            ofTranslate(0, 0+f); // adding f to y will make it move up and down using sin()
+             
             stateButton.draw(ofGetWidth()/2-25,635); // drawing the state swtich button
             ofPopMatrix();
             
             ofPushMatrix();
-            ofTranslate(600,0);
+            ofTranslate(600,0); // translate x to middle of the screen
         
             if(stateSwitch == true) { // start rotating when the user pressed the button
                 
-                rotY += 1 * rate;
-                ofRotateY(rotY);
-                lLine -= 0.85;
-                rLine += 0.85;
+                rotY += 1 * rate; // adding 1* rate to rotY so the rotation is smooth
+                ofRotateY(rotY); // call the rotation on the cirlce of rectangles
+                lLine -= 0.85; // decreasing lLine so that it moves left
+                rLine += 0.85; // increasing rLine so that it moves right
             }
-            
-            if(lLine <= 100){
-                lLine = 100;
-                state = 1;
-                stateSwitch = false;
-            }
-            if(rLine >= 1100){
-                rLine = 1100;
-            }
-            
-            if(state == 1){
-                lLine = 400;
-                rLine = 800;
-            }
-            
-            ofTranslate(-600,0);
+    
+            ofTranslate(-600,0); // translate again but now - the middle of the screen so the rotation happens around it's own axis
             
             circle->display(); // displaying the cirlce of rectangles
             circle->update(); // updating the cirlce of rectangles
@@ -141,36 +153,36 @@ void ofApp::draw(){
             
             ofLine(0,ofGetHeight()/2,lLine, ofGetHeight()/2); // left line
             ofLine(rLine,ofGetHeight()/2,ofGetWidth(), ofGetHeight()/2); // right line
-            ofLine(100, 330, 100, 370 );
-            ofDrawBitmapString("Time", 60, 345); // draw text
-            ofDrawBitmapString(ofGetElapsedTimef(), 35, 365); // draw text
-            ofLine(1100, 330, 1100, 370 );
-            ofDrawBitmapString("Song", 1110, 345); // draw text
-             ofDrawBitmapString("Name", 1110, 365); // draw text
+            ofLine(100, 330, 100, 370 ); // vertical left line
+            ofDrawBitmapString("Time", 60, 345);
+            ofDrawBitmapString(ofGetElapsedTimef(), 35, 365);
+            ofLine(1100, 330, 1100, 370 ); // vertical right line
+            ofDrawBitmapString("Song", 1110, 345);
+            ofDrawBitmapString("Name", 1110, 365);
             
+            // song picker
             ofDrawRectRounded(1110,455, 0, 30, 8, 4);
             ofDrawRectRounded(1110, 475, 0, 30, 8, 4);
             
-            //slider
+            // volume slider
             ofLine(150, 400, 150, 550);
-            ofDrawRectRounded(135,475, 30, 10,4);
+            ofDrawRectRounded(135,420, 30, 10,4);
             ofDrawBitmapString("Volume", 125, 570);
             
             //instructions
-            
-            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 400); // draw text
-             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 420);
-             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 440);
-             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 460);
-             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 480);
-             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 500);
-             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 520);
+            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 400);
+            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 420);
+            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 440);
+            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 460);
+            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 480);
+            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 500);
+            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 520);
             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 540);
             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 560);
-            //slider
+             
+            // instruction slider
             ofLine(1060, 400, 1060, 550);
-            ofDrawRectRounded(1055,465, 10, 10,2);
-            
+            ofDrawRectRounded(1055,420, 10, 10,2);
             
             playButton[index].draw(ofGetWidth()/2-20, 325); // drawing the play button
             
@@ -180,14 +192,14 @@ void ofApp::draw(){
             
             
         case 1:
-            image2.draw(0,0); // call black background
+             
+            image2.draw(0,0); // draw background image
             
             for(int i = 0; i < Nums; i ++) { // looping through all the particles
                 
                 part[i]->display(); // displaying the particles
             }
             
-            // draw lines between near points
             ofPushStyle();
             ofSetColor(255, 70);
             float dist = 60; // Threshold parameter of distance
@@ -211,18 +223,19 @@ void ofApp::draw(){
 
 void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
     
-    if(play == true){
+    if(play == true){ // if the play button has been clicked
         
     for (int i = 0; i < bufferSize; i++){
         
         sample = sound.play(); // play the sample
         
-        //if (fft.process(wave)) {
-       //     oct.calculate(fft.magnitudes);
-       // }
+        if (fft.process(sample)) {
+            oct.calculate(fft.magnitudes);
+        }
         
-        output[i*nChannels    ] = sample; /* You may end up with lots of outputs. add them here */
+        output[i*nChannels    ] = sample;
         output[i*nChannels + 1] = sample;
+        
         }
     }
 }
@@ -233,25 +246,17 @@ void ofApp::keyPressed(int key){
     
     if(key == 'a') {
         
-        state = 1; // switch state to nightMode
+        state = 1; // manually switch states
     }
     
     if(key == 's') {
         
-        state = 0; // switch back to dayMode
-    }
-    
-    if(key == 'p'){ // press p to play the music
-        
-        play = true;
+        state = 0; // manually switch states
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    
-    
-    
 
 }
 
@@ -268,13 +273,17 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
     
-    if(mouseX >= 565 && mouseX <= 635 && mouseY >= 630 && mouseY <= 665 ) {
+    if(mouseX >= 565 && mouseX <= 635 && mouseY >= 650 && mouseY <= 680 ) {
        
        //state = 1;
-        stateSwitch = !stateSwitch;
+        stateSwitch = !stateSwitch; // click in the arrow button to start the animation and then switch state
         
    }
-
+    
+      if(mouseX >= 585 && mouseX <= 625 && mouseY >= 335 && mouseY <= 365 ) {
+          
+          play = !play; // play the music of you click on the play button
+      }
 }
 
 //--------------------------------------------------------------

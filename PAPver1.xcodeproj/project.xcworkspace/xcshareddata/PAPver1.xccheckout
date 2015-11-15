@@ -12,20 +12,24 @@
 	<dict>
 		<key>2DE9C8846D9375EAACFABA8963120E8E7719BAF5</key>
 		<string>https://github.com/openframeworks/openFrameworks.git</string>
+		<key>C70D7FACCBDE7EDF150D31C01F3F91EF6C069FE6</key>
+		<string>https://github.com/johanGelinder/FinalProjectPAP.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>apps/myApps/PAPver1/PAPver1.xcodeproj</string>
+	<string>PAPver1.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>2DE9C8846D9375EAACFABA8963120E8E7719BAF5</key>
 		<string>../../../../..</string>
+		<key>C70D7FACCBDE7EDF150D31C01F3F91EF6C069FE6</key>
+		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/openframeworks/openFrameworks.git</string>
+	<string>https://github.com/johanGelinder/FinalProjectPAP.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>2DE9C8846D9375EAACFABA8963120E8E7719BAF5</string>
+	<string>C70D7FACCBDE7EDF150D31C01F3F91EF6C069FE6</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
@@ -34,7 +38,15 @@
 			<key>IDESourceControlWCCIdentifierKey</key>
 			<string>2DE9C8846D9375EAACFABA8963120E8E7719BAF5</string>
 			<key>IDESourceControlWCCName</key>
-			<string>openFrameworks</string>
+			<string>..</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C70D7FACCBDE7EDF150D31C01F3F91EF6C069FE6</string>
+			<key>IDESourceControlWCCName</key>
+			<string>PAPver1</string>
 		</dict>
 	</array>
 </dict>
