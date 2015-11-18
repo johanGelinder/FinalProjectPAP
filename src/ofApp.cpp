@@ -13,7 +13,6 @@
 // Write a music piece for the visualizer
 // Apply fade in and fade out from states
 // ( choose your own song )
-// Fix animation for the stateSwitch button
 // Load new fonts
 // Make sure that the sliders work
 // See if I can add a glow filter on the particles in state 1
@@ -34,6 +33,13 @@ void ofApp::setup(){
     ofEnableSmoothing();
     
     sound.load(ofToDataPath("sound.wav")); // loading audio track
+    
+    ts = new maxiTimestretch<grainPlayerWin>(&sound);
+   
+    stretches.push_back(ts);
+    
+    speed = 1;
+    grainLength = 0.05;
     
     stateSwitch = false;
     image.load("blog.jpg"); // loading the background image
@@ -75,14 +81,27 @@ void ofApp::setup(){
 void ofApp::update(){
     
     for(int i = 0; i < Nums; i ++) { // looping through all the particles
+       
+            part[i]->update(speed); // updating the spedd the paricles by using the speed of the sample
         
-        part[i]->update(); // updating the particles
-    }
+     for(int j = 0; j < *oct.averages; j++) {
+         
+         part[i]->updatePoints(j); // updating the points using the fft from the audio track
+        }
+     }
 }
 
 //--------------------------------------------------------------
 
 void ofApp::draw(){
+    
+  // std:: cout << speed << std::endl;
+    
+    if(synth == false){ // if synth is equal to false then the values goes back to normal
+        
+        speed = 1;
+        grainLength = 0.05;
+    }
     
 /*------------------------ Menu Visualizer -----------------------------------*/
     
@@ -147,7 +166,13 @@ void ofApp::draw(){
             ofTranslate(-600,0); // translate again but now - the middle of the screen so the rotation happens around it's own axis
             
             circle->display(); // displaying the cirlce of rectangles
-            circle->update(); // updating the cirlce of rectangles
+             
+             for(int i = 0; i < *oct.averages; i++) {
+                // std:: cout << i << std::endl;
+
+            circle->update(i); // updating the cirlce of rectangles
+                
+             }
             
             ofPopMatrix();
             
@@ -178,8 +203,7 @@ void ofApp::draw(){
             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 560);
             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 580);
             ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 600);
-          
-             
+        
             // instruction slider
             ofLine(1060, 450, 1060, 600);
             ofDrawRectRounded(1055,470, 10, 10,2);
@@ -230,18 +254,31 @@ void ofApp::draw(){
 void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
     
     if(play == true){ // if the play button has been clicked
-        
+//        
     for (int i = 0; i < bufferSize; i++){
-        
-        sample = sound.play(); // play the sample
-        
-        if (fft.process(sample)) {
-            oct.calculate(fft.magnitudes);
-        }
-        
-        output[i*nChannels    ] = sample;
-        output[i*nChannels + 1] = sample;
-        
+//        
+//        sample = sound.play(); // play the sample
+//        
+//        if (fft.process(sample)) {
+//            oct.calculate(fft.magnitudes);
+//        }
+//        
+//        output[i*nChannels    ] = sample;
+//        output[i*nChannels + 1] = sample;
+//        
+//        }
+//    }
+    sample = stretches[0]->play(speed, grainLength, 2, 0);
+    // wave = stretches[current]->play(speed, 0.1, 4, 0);
+    //		wave = stretches[current]->play2(pos, 0.1, 4);
+    if (fft.process(sample)) {
+        oct.calculate(fft.magnitudes);
+    }
+    
+    //play result
+   // mymix.stereo(wave, outputs, 0.5);
+    output[i*nChannels    ] = sample;
+    output[i*nChannels + 1] = sample;
         }
     }
 }
@@ -259,6 +296,10 @@ void ofApp::keyPressed(int key){
         
         state = 0; // manually switch states
     }
+    if( key == ' ') {
+        
+        synth = !synth;
+    }
 }
 
 //--------------------------------------------------------------
@@ -268,7 +309,14 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
+    
+    if(synth == true) {
+    
+    speed = ((double ) x / ofGetWidth() * 4.0) - 2.0;
+    grainLength = ((double) y / ofGetHeight() * 0.1) + 0.001;
+   // pos = ((double) x / ofGetWidth() * 2.0);
 
+    }
 }
 
 //--------------------------------------------------------------

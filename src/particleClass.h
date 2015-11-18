@@ -19,7 +19,8 @@ public:
     // Methods
     
     void display(); // display method
-    void update();  // update method
+    void update(double speed);  // update method
+    void updatePoints(float i);
     
     // variables
     

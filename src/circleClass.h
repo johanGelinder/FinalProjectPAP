@@ -19,7 +19,7 @@ public:
     //methods
     
     void display();
-    void update();
+    void update(float i);
     void drawRect(int i);
     
     float x; // posX

@@ -4,9 +4,12 @@
 #include "circleClass.h"
 #include "particleClass.h"
 #include "ofxMaxim.h"
+#include "maxiGrains.h"
+#include <sys/time.h>
 
 
 #define Nums 200 // number of particles
+typedef hannWinFunctor grainPlayerWin;
 
 class ofApp : public ofBaseApp{
 
@@ -39,6 +42,7 @@ class ofApp : public ofBaseApp{
         float rotY = PI / 4;
         float rate = 0.5;
         bool stateSwitch;
+        bool synth = false;
         float f;
         float A = 5;
         float e = 0.005;
@@ -65,5 +69,10 @@ class ofApp : public ofBaseApp{
         double outputs[2];
         ofxMaxiFFT fft;
         ofxMaxiFFTOctaveAnalyzer oct;
+        vector<maxiTimestretch<grainPlayerWin>*> stretches;
+        maxiTimestretch<grainPlayerWin> *ts;
+        double speed, grainLength;
+        int current;
+
 
 };

@@ -21,7 +21,7 @@ Particles::Particles(float _x, float _y, int _dim) {  // implementation of the c
     color.set(255,70); // white color with opacity
 }
 
-void Particles::update() {
+void Particles::update(double speed) {
     
     /*---------------- collision ------------*/
     
@@ -39,10 +39,17 @@ void Particles::update() {
         y = 50; // moves the particle to the opposite side
     }
     
-    x += speedX; // assign speedX to the x position which is a random number
-    y += speedY; // assign speedY to the y position which is a random number
+    double rate = speed* 0.5; // making the particle system move to the speed of the music
     
-    //dim = ofRandom(4,8); // setting the dimention of the particles to be a random number this will be replaced by the fft values from audio file that plays
+    x += speedX*rate; // assign speedX to the x position which is a random number then adding rate wich is connected to the speed of the audio file which is controlled by the gradular sythesis
+    y += speedY*-rate;// assign speedY to the y position which is a random number
+    
+    }
+
+void Particles::updatePoints(float i) {
+    dim = i/12; // setting the dimention of the particles to be a random number this will be replaced by the fft values from audio file that plays
+
+    
 }
 
 void Particles::display() {  // display function
