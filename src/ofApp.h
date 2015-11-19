@@ -32,7 +32,7 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
    
         ofImage image; // initializing the background image
-        ofImage image2,mute;
+        ofImage image2,mute,grand;
         vector<ofImage> playButton;
         ofImage stateButton;
     
@@ -63,6 +63,8 @@ class ofApp : public ofBaseApp{
     
         int bufferSize;
         int sampleRate;
+        float alpha = 0;
+        float alpha2 = 255;
         ofxMaxiMix myMix;
         maxiSample sound;
         double sample;

@@ -53,6 +53,7 @@ void ofApp::setup(){
         ofImage img;
     
         img.loadImage("img1.png"); // loading the images
+        grand.loadImage("grand.png"); // grandular sythesis button
     
         playButton.push_back(img); // pushing the images into the vector
     
@@ -95,7 +96,9 @@ void ofApp::update(){
 
 void ofApp::draw(){
     
-  // std:: cout << speed << std::endl;
+   std:: cout << mouseX << std::endl;
+    
+    
     
     if(synth == false){ // if synth is equal to false then the values goes back to normal
         
@@ -107,11 +110,14 @@ void ofApp::draw(){
     
      switch (state) {
             
-        case 0: 
-            
-            image.draw(0,0); // drawing the background image
+        case 0:
              
-             if(play == true) { // if the pley button has been pressed
+             image.draw(0,0); // drawing the background image
+             
+             mute.draw(260, 500); // mute button
+             grand.draw(150,500); // grandular sythesis button
+             
+             if(play == true) { // if the play button has been pressed
                  
              glPushMatrix();
              ofTranslate(150,175); // translate the array of rectangles to this position
@@ -126,10 +132,6 @@ void ofApp::draw(){
              glPopMatrix();
                  
              }
-             
-             mute.draw(260, 500); // mute button
-             ofDrawBitmapString("Music Visualizer", 540, 40); // draw text
-             ofDrawBitmapString("Created by johan Gelinder", 510, 60); // draw text
              
              if(lLine <= 100){ // if lLine is less or equal to 100
                  
@@ -168,7 +170,6 @@ void ofApp::draw(){
             circle->display(); // displaying the cirlce of rectangles
              
              for(int i = 0; i < *oct.averages; i++) {
-                // std:: cout << i << std::endl;
 
             circle->update(i); // updating the cirlce of rectangles
                 
@@ -184,40 +185,54 @@ void ofApp::draw(){
             ofLine(1100, 330, 1100, 370 ); // vertical right line
             ofDrawBitmapString("Song", 1110, 345);
             ofDrawBitmapString("Name", 1110, 365);
-            
-            // song picker
-            ofDrawRectRounded(1110,450, 0, 30, 8, 4);
-            ofDrawRectRounded(1110, 470, 0, 30, 8, 4);
-            
-            // volume slider
-            ofLine(150, 450, 150, 600);
-            ofDrawRectRounded(135,470, 30, 10,4);
-            ofDrawBitmapString("Volume", 125, 620);
-            
+
+            // name = ofToDataPath("sound.wav");
             //instructions
-            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 460);
-            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 480);
-            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 500);
-            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 520);
-            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 540);
-            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 560);
-            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 580);
-            ofDrawBitmapString("kldkealjfkaekfjaekddfddw", 850, 600);
-        
-            // instruction slider
-            ofLine(1060, 450, 1060, 600);
-            ofDrawRectRounded(1055,470, 10, 10,2);
+            ofDrawBitmapString("To switch state of the", 850, 460);
+            ofDrawBitmapString("visualizer, press the", 850, 480);
+            ofDrawBitmapString("arrow button at the bottom", 850, 500);
+            ofDrawBitmapString("of the screen. To manipulate", 850, 520);
+            ofDrawBitmapString("the audio track, click on", 850, 540);
+            ofDrawBitmapString("the button at the far left", 850, 560);
+            ofDrawBitmapString("corner and then use the", 850, 580);
+            ofDrawBitmapString("mouse to activate the", 850, 600);
+            ofDrawBitmapString("grandular synthesis", 850, 620);
+
             
             playButton[index].draw(ofGetWidth()/2-20, 325); // drawing the play button
-            
+             
+             if( stateSwitch == true) {
+                 alpha ++;
+                 ofPushStyle();
+                 ofSetColor(0, alpha);
+                 ofRect(0, 0, ofGetWidth(),ofGetHeight());
+                 ofPopStyle();
+                 
+             }
+             
             break;
             
 /*------------------------ Particle Visualizer -----------------------------------*/
             
             
         case 1:
-             
+
             image2.draw(0,0); // draw background image
+             
+             mute.draw(160, 600); // mute button
+             grand.draw(50,600); // grandular sythesis button
+
+             
+             alpha2 --;
+             ofPushStyle();
+             ofSetColor(0, alpha2);
+             ofRect(0,0,ofGetWidth(),ofGetHeight());
+             ofPopStyle();
+             
+             if(alpha2 <= 0) {
+                 
+                 alpha2 = 0;
+             }
              
              ofPushMatrix();
              f = A*sin(e * ofGetElapsedTimeMillis() + 4); // will move the arrow up and down
@@ -249,6 +264,7 @@ void ofApp::draw(){
             
             break;
     }
+    
 }
 
 void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
@@ -268,6 +284,7 @@ void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
 //        
 //        }
 //    }
+        //sample = stretches[0]->mute();
     sample = stretches[0]->play(speed, grainLength, 2, 0);
     // wave = stretches[current]->play(speed, 0.1, 4, 0);
     //		wave = stretches[current]->play2(pos, 0.1, 4);
@@ -296,10 +313,10 @@ void ofApp::keyPressed(int key){
         
         state = 0; // manually switch states
     }
-    if( key == ' ') {
-        
-        synth = !synth;
-    }
+//    if( key == ' ') {
+//        
+//        synth = !synth;
+//    }
 }
 
 //--------------------------------------------------------------
@@ -321,27 +338,44 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
     
     if(mouseX >= 565 && mouseX <= 635 && mouseY >= 650 && mouseY <= 680 ) {
-       
-       //state = 1;
+    
         stateSwitch = !stateSwitch; // click in the arrow button to start the animation and then switch state
         
         if(state == 1 ) {
+            alpha = 0;
             state = 0;
             stateSwitch = false;
         }
    }
     
+    if( state == 0) { // You have to be in the fist state to be able to press the play button
+        alpha2 = 255;
+    
       if(mouseX >= 585 && mouseX <= 625 && mouseY >= 335 && mouseY <= 365 ) {
           
           play = !play; // play the music of you click on the play button
       }
+        
+        if(mouseX >= 150 && mouseX <= 200 && mouseY >= 500 && mouseY <= 550 ) {
+            
+            synth = !synth;
+        }
+    }
+    
+    if( state == 1) {
+           if(mouseX >= 50 && mouseX <= 100 && mouseY >= 600 && mouseY <= 650 ) {
+    
+    synth = !synth;
+           }
+   }
+    
+    
 }
 
 //--------------------------------------------------------------
