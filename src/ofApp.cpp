@@ -9,12 +9,7 @@
 // Apply the FFT values to the rectLength in state 0 and to the particles in state 1
 // Make the particles move in 3D space
 // Set up the play button animation by looping the images
-// Set up instructions
 // Write a music piece for the visualizer
-// Apply fade in and fade out from states
-// ( choose your own song )
-// Load new fonts
-// Make sure that the sliders work
 // See if I can add a glow filter on the particles in state 1
 //
 
@@ -96,9 +91,8 @@ void ofApp::update(){
 
 void ofApp::draw(){
     
-   std:: cout << mouseX << std::endl;
-    
-    
+   std:: cout << rotY << std::endl;
+    // std:: cout << fade << std::endl;
     
     if(synth == false){ // if synth is equal to false then the values goes back to normal
         
@@ -113,7 +107,6 @@ void ofApp::draw(){
         case 0:
              
              image.draw(0,0); // drawing the background image
-             
              mute.draw(260, 500); // mute button
              grand.draw(150,500); // grandular sythesis button
              
@@ -133,10 +126,10 @@ void ofApp::draw(){
                  
              }
              
-             if(lLine <= 100){ // if lLine is less or equal to 100
+             if(lLine <= 150){ // if lLine is less or equal to 100
                  
                  state = 1; // switch states
-                 stateSwitch = false; // setting the stateSwitch boolean back to false
+                 rotY = PI / 4;
                  
              }
              
@@ -145,9 +138,12 @@ void ofApp::draw(){
                  // original position
                  lLine = 400;
                  rLine = 800;
+                 stateSwitch = false; // setting the stateSwitch boolean back to false
              }
             
             ofPushMatrix();
+             
+            
              
             f = A*sin(e * ofGetElapsedTimeMillis() + 4); // will move the arrow up and down
             ofTranslate(0, 0+f); // adding f to y will make it move up and down using sin()
@@ -164,6 +160,7 @@ void ofApp::draw(){
                 lLine -= 0.85; // decreasing lLine so that it moves left
                 rLine += 0.85; // increasing rLine so that it moves right
             }
+             
     
             ofTranslate(-600,0); // translate again but now - the middle of the screen so the rotation happens around it's own axis
             
@@ -172,7 +169,6 @@ void ofApp::draw(){
              for(int i = 0; i < *oct.averages; i++) {
 
             circle->update(i); // updating the cirlce of rectangles
-                
              }
             
             ofPopMatrix();
@@ -186,7 +182,6 @@ void ofApp::draw(){
             ofDrawBitmapString("Song", 1110, 345);
             ofDrawBitmapString("Name", 1110, 365);
 
-            // name = ofToDataPath("sound.wav");
             //instructions
             ofDrawBitmapString("To switch state of the", 850, 460);
             ofDrawBitmapString("visualizer, press the", 850, 480);
@@ -201,13 +196,18 @@ void ofApp::draw(){
             
             playButton[index].draw(ofGetWidth()/2-20, 325); // drawing the play button
              
-             if( stateSwitch == true) {
+             if( fade == true) {
+                 
                  alpha ++;
                  ofPushStyle();
                  ofSetColor(0, alpha);
                  ofRect(0, 0, ofGetWidth(),ofGetHeight());
                  ofPopStyle();
                  
+             }
+             
+             if(alpha == 296){
+                 fade = false;
              }
              
             break;
@@ -223,18 +223,7 @@ void ofApp::draw(){
              grand.draw(50,600); // grandular sythesis button
 
              
-             alpha2 --;
-             ofPushStyle();
-             ofSetColor(0, alpha2);
-             ofRect(0,0,ofGetWidth(),ofGetHeight());
-             ofPopStyle();
-             
-             if(alpha2 <= 0) {
-                 
-                 alpha2 = 0;
-             }
-             
-             ofPushMatrix();
+                         ofPushMatrix();
              f = A*sin(e * ofGetElapsedTimeMillis() + 4); // will move the arrow up and down
              ofTranslate(0, 0+f); // adding f to y will make it move up and down using sin()
              stateButton.draw(ofGetWidth()/2-25,635); // drawing the state swtich button
@@ -261,33 +250,34 @@ void ofApp::draw(){
                 }
             }
             ofPopStyle();
-            
+             
+             alpha2 --; // fading in by decreaing the rectangle alpha value
+             ofPushStyle();
+             ofSetColor(0, alpha2); // back colour with changing alpha
+             ofRect(0,0,ofGetWidth(),ofGetHeight()); // drawing a rectangle of the whole screen
+             ofPopStyle();
+             
+             if(alpha2 <= 0) { // when aplha2 is fully transparant then is will stay that way until the state switches again
+                 
+                 alpha2 = 0;
+             }
+             
+             if(state == 0){
+                 alpha2 == 255; // if the state switches back then set alpha2 back to it's original position
+             }
             break;
     }
-    
 }
 
 void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
     
     if(play == true){ // if the play button has been clicked
-//        
-    for (int i = 0; i < bufferSize; i++){
-//        
-//        sample = sound.play(); // play the sample
-//        
-//        if (fft.process(sample)) {
-//            oct.calculate(fft.magnitudes);
-//        }
-//        
-//        output[i*nChannels    ] = sample;
-//        output[i*nChannels + 1] = sample;
-//        
-//        }
-//    }
+        
+    for (int i = 0; i < bufferSize; i++){ // looping through the bufferSize
+
         //sample = stretches[0]->mute();
     sample = stretches[0]->play(speed, grainLength, 2, 0);
-    // wave = stretches[current]->play(speed, 0.1, 4, 0);
-    //		wave = stretches[current]->play2(pos, 0.1, 4);
+ 
     if (fft.process(sample)) {
         oct.calculate(fft.magnitudes);
     }
@@ -346,17 +336,25 @@ void ofApp::mousePressed(int x, int y, int button){
     if(mouseX >= 565 && mouseX <= 635 && mouseY >= 650 && mouseY <= 680 ) {
     
         stateSwitch = !stateSwitch; // click in the arrow button to start the animation and then switch state
+        if(state == 0) {
+        fade = true;
+            clickedOn = true;
+            
+        }
         
         if(state == 1 ) {
             alpha = 0;
             state = 0;
             stateSwitch = false;
+            clickedOn = false;
+           // f = 0;
+            
         }
    }
     
     if( state == 0) { // You have to be in the fist state to be able to press the play button
         alpha2 = 255;
-    
+        
       if(mouseX >= 585 && mouseX <= 625 && mouseY >= 335 && mouseY <= 365 ) {
           
           play = !play; // play the music of you click on the play button
@@ -373,9 +371,7 @@ void ofApp::mousePressed(int x, int y, int button){
     
     synth = !synth;
            }
-   }
-    
-    
+    }
 }
 
 //--------------------------------------------------------------

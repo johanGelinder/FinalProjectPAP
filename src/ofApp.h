@@ -54,7 +54,8 @@ class ofApp : public ofBaseApp{
         float rectWidth = 2;
         float x = ofGetWidth()/2;
         float y = ofGetHeight()/2;
-    
+        bool fade = false;
+        bool clickedOn = false;
         circleClass *circle;
     
         Particles *part[Nums]; // creating a pointer ( a refrence in memory) for each object
