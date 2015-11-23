@@ -50,17 +50,27 @@ void ofApp::setup(){
     stateButton.load("state.png"); // loading the stateSwitch button
     change.load("change.png");
     index = 0; // setting the index to 0 which will be the first image in the loop
+   // img.loadImage("img1.png"); // loading the images
+    grand.loadImage("grand.png"); // grandular sythesis button
     
-   // for(int i = 0; playButton.size(); i ++) { // looping through the playButton vector
-        
+    index = 0;
+    time = ofGetElapsedTimeMillis();
+    
+    string path = "/Users/johangelinder/Desktop/openFrameworks/apps/myApps/PAPver1/bin/data/play";
+    ofDirectory dir(path);
+    //only show png files
+    dir.allowExt("png");
+    //populate the directory object
+    dir.listDir();
+    
+    //go through and print out all the paths
+    for(int i = 0; i < dir.size(); i++){
         ofImage img;
+        // ofLogNotice(dir.getPath(i));
+        img.loadImage(dir.getPath(i));
+        images.push_back(img);
+    }
     
-        img.loadImage("img1.png"); // loading the images
-        grand.loadImage("grand.png"); // grandular sythesis button
-    
-        playButton.push_back(img); // pushing the images into the vector
-    
-    //}
     
     //----------- Creating the circle of rectangles ------------
  
@@ -100,6 +110,31 @@ void ofApp::update(){
     }else{
         volume = 0;
     }
+    
+    if(play == true){
+        
+     //   if(ofGetElapsedTimeMillis() > time + 40) {
+            
+            index ++;
+           // time = ofGetElapsedTimeMillis();
+            if(index >= 13){
+                index = 12;
+           // }
+        }
+        
+    }else{
+        
+        //if(ofGetElapsedTimeMillis() > time + 40) {
+            
+            index --;
+           // time = ofGetElapsedTimeMillis();
+            if(index <= 0){
+                index = 0;
+                
+            }
+       // }
+    }
+
 }
 
 //--------------------------------------------------------------
@@ -201,6 +236,8 @@ void ofApp::draw(){
             ofLine(0,ofGetHeight()/2,lLine, ofGetHeight()/2); // left line
             ofLine(rLine,ofGetHeight()/2,ofGetWidth(), ofGetHeight()/2); // right line
              
+             
+            // ofLine(ofGetWidth()/2, 0, ofGetWidth()/2, ofGetHeight());
             ofLine(100, 330, 100, 370 ); // vertical left line
             ofDrawBitmapString("Time", 60, 345);
             ofDrawBitmapString(ofGetElapsedTimef(), 35, 365);
@@ -220,7 +257,8 @@ void ofApp::draw(){
             ofDrawBitmapString("grandular synthesis", 850, 620);
 
             
-            playButton[0].draw(ofGetWidth()/2-20, 325); // drawing the play button
+           // playButton[0].draw(ofGetWidth()/2-20, 325); // drawing the play button
+             images[index].draw(ofGetWidth()/2-26, 325);
              
              if( fade == true) {
                  
@@ -248,7 +286,7 @@ void ofApp::draw(){
             grand.draw(50,600); // grandular sythesis button
             mute.draw(130, 600); // mute button
              change.draw(210,600);
-            playButton[0].draw(1100, 600); // drawing the play buttonchange.draw(210,600);
+            //playButton[0].draw(1100, 600); // drawing the play buttonchange.draw(210,600);
              
 
              if(synth == true) {
@@ -309,7 +347,7 @@ void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
     for (int i = 0; i < bufferSize; i++){ // looping through the bufferSize
 
         //sample = stretches[0]->mute();
-    sample = stretches[index]->play(speed, grainLength, 2, 0);
+    sample = stretches[0]->play(speed, grainLength, 2, 0);
  
     if (fft.process(sample)) {
         oct.calculate(fft.magnitudes);

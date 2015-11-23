@@ -33,8 +33,9 @@ class ofApp : public ofBaseApp{
    
         ofImage image; // initializing the background image
         ofImage image2,mute,mute2,grand,change;
-        vector<ofImage> playButton;
+        vector<ofImage> images;
         ofImage stateButton;
+        int time;
     
         int index;
         bool play = false;
