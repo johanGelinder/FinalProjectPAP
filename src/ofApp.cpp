@@ -33,7 +33,7 @@ void ofApp::setup(){
     
     
     ts = new maxiTimestretch<grainPlayerWin>(&sound);
-   // ts2 new maxiTimestretch<grainPlayerWin>(&sound)2;
+   // ts2 new maxiTimestretch<grainPlayerWin>(&sound2);
 
    
     stretches.push_back(ts);
@@ -46,7 +46,9 @@ void ofApp::setup(){
     image.load("blog.jpg"); // loading the background image
     image2.load("2.jpg");
     mute.load("mute.png");
+    mute2.load("mute2.png");
     stateButton.load("state.png"); // loading the stateSwitch button
+    change.load("change.png");
     index = 0; // setting the index to 0 which will be the first image in the loop
     
    // for(int i = 0; playButton.size(); i ++) { // looping through the playButton vector
@@ -120,21 +122,28 @@ void ofApp::draw(){
         case 0:
              
              image.draw(0,0); // drawing the background image
-             mute.draw(260, 500); // mute button
-             grand.draw(150,500); // grandular sythesis button
+             grand.draw(145,500); // grandular sythesis button
+             if(vol == true) {
+             mute.draw(225, 500); // mute button
+             }else{
+                 mute2.draw(225,500);
+             }
+             change.draw(305,500);
+             
              if( synth == true) {
-                 ofRect(150,560, 50,10);
+                 ofDrawRectRounded(145,560, 50,10,5);
              }
              
              if(play == true) { // if the play button has been pressed
                  
              glPushMatrix();
-             ofTranslate(150,175); // translate the array of rectangles to this position
+             ofTranslate(145,175); // translate the array of rectangles to this position
              
-             for(int i = 0; i < 30; i++) { // making 30 rectangles
+             for(int i = 0; i < 42; i++) { // making 30 rectangles
             
                  ofPushStyle();
                  ofSetColor(255); // white colour
+                 
                  ofRect(i * 5, 0, 2, -oct.averages[i]); // drawing rectangles and having the fft values from the song change the height of the rectangles
                  ofPopStyle();
              }
@@ -191,6 +200,7 @@ void ofApp::draw(){
             
             ofLine(0,ofGetHeight()/2,lLine, ofGetHeight()/2); // left line
             ofLine(rLine,ofGetHeight()/2,ofGetWidth(), ofGetHeight()/2); // right line
+             
             ofLine(100, 330, 100, 370 ); // vertical left line
             ofDrawBitmapString("Time", 60, 345);
             ofDrawBitmapString(ofGetElapsedTimef(), 35, 365);
@@ -210,7 +220,7 @@ void ofApp::draw(){
             ofDrawBitmapString("grandular synthesis", 850, 620);
 
             
-            playButton[index].draw(ofGetWidth()/2-20, 325); // drawing the play button
+            playButton[0].draw(ofGetWidth()/2-20, 325); // drawing the play button
              
              if( fade == true) {
                  
@@ -235,10 +245,14 @@ void ofApp::draw(){
 
             image2.draw(0,0); // draw background image
              
-             mute.draw(160, 600); // mute button
-             grand.draw(50,600); // grandular sythesis button
+            grand.draw(50,600); // grandular sythesis button
+            mute.draw(130, 600); // mute button
+             change.draw(210,600);
+            playButton[0].draw(1100, 600); // drawing the play buttonchange.draw(210,600);
+             
+
              if(synth == true) {
-                 ofRect(50, 660, 50,10);
+                 ofDrawRectRounded(50,660, 50,10,5);
              }
 
              
@@ -295,7 +309,7 @@ void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
     for (int i = 0; i < bufferSize; i++){ // looping through the bufferSize
 
         //sample = stretches[0]->mute();
-    sample = stretches[0]->play(speed, grainLength, 2, 0);
+    sample = stretches[index]->play(speed, grainLength, 2, 0);
  
     if (fft.process(sample)) {
         oct.calculate(fft.magnitudes);
@@ -376,11 +390,11 @@ void ofApp::mousePressed(int x, int y, int button){
           play = !play; // play the music of you click on the play button
       }
         
-        if(mouseX >= 150 && mouseX <= 200 && mouseY >= 500 && mouseY <= 550 ) { // click on the grandular sythesiser button
+        if(x >= 145 && x <= 195 && y >= 500 && y <= 550 ) { // click on the grandular sythesiser button
             
             synth = !synth;
         }
-        if(x >= 260 && x <= 310 && y >= 500 && y <= 550){
+        if(x >= 225 && x <= 275 && y >= 500 && y <= 550){
             vol = !vol;
            
         }

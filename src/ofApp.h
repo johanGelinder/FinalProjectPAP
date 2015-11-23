@@ -32,7 +32,7 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
    
         ofImage image; // initializing the background image
-        ofImage image2,mute,grand;
+        ofImage image2,mute,mute2,grand,change;
         vector<ofImage> playButton;
         ofImage stateButton;
     
