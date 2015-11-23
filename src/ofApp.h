@@ -56,7 +56,9 @@ class ofApp : public ofBaseApp{
         float y = ofGetHeight()/2;
         bool fade = false;
         bool clickedOn = false;
+        bool vol = true;
         circleClass *circle;
+        int volume;
     
         Particles *part[Nums]; // creating a pointer ( a refrence in memory) for each object
     
@@ -67,7 +69,7 @@ class ofApp : public ofBaseApp{
         float alpha = 0;
         float alpha2 = 255;
         ofxMaxiMix myMix;
-        maxiSample sound;
+        maxiSample sound, sound2;
         double sample;
         double outputs[2];
         ofxMaxiFFT fft;
@@ -75,7 +77,7 @@ class ofApp : public ofBaseApp{
         vector<maxiTimestretch<grainPlayerWin>*> stretches;
         maxiTimestretch<grainPlayerWin> *ts;
         double speed, grainLength;
-        int current;
+        //int current;
 
 
 };

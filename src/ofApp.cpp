@@ -17,6 +17,7 @@ void ofApp::setup(){
     
     sampleRate = 44100; // initializing the sampleRate
     bufferSize = 512; // initializing the bufferSize
+    volume = 1;
     
     fft.setup(1024, 512, 256);
     oct.setup(44100, 1024, 10);
@@ -28,10 +29,15 @@ void ofApp::setup(){
     ofEnableSmoothing();
     
     sound.load(ofToDataPath("sound.wav")); // loading audio track
+  //  sound2.oad(ofToDataPath("sound2.wav"));
+    
     
     ts = new maxiTimestretch<grainPlayerWin>(&sound);
+   // ts2 new maxiTimestretch<grainPlayerWin>(&sound)2;
+
    
     stretches.push_back(ts);
+    //stretches.push_back(ts2);
     
     speed = 1;
     grainLength = 0.05;
@@ -85,13 +91,20 @@ void ofApp::update(){
          part[i]->updatePoints(j); // updating the points using the fft from the audio track
         }
      }
+    
+    if(vol == true){
+        volume = 1;
+        
+    }else{
+        volume = 0;
+    }
 }
 
 //--------------------------------------------------------------
 
 void ofApp::draw(){
     
-   std:: cout << rotY << std::endl;
+   std:: cout << mouseY << std::endl;
     // std:: cout << fade << std::endl;
     
     if(synth == false){ // if synth is equal to false then the values goes back to normal
@@ -109,6 +122,9 @@ void ofApp::draw(){
              image.draw(0,0); // drawing the background image
              mute.draw(260, 500); // mute button
              grand.draw(150,500); // grandular sythesis button
+             if( synth == true) {
+                 ofRect(150,560, 50,10);
+             }
              
              if(play == true) { // if the play button has been pressed
                  
@@ -221,6 +237,9 @@ void ofApp::draw(){
              
              mute.draw(160, 600); // mute button
              grand.draw(50,600); // grandular sythesis button
+             if(synth == true) {
+                 ofRect(50, 660, 50,10);
+             }
 
              
                          ofPushMatrix();
@@ -284,8 +303,8 @@ void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
     
     //play result
    // mymix.stereo(wave, outputs, 0.5);
-    output[i*nChannels    ] = sample;
-    output[i*nChannels + 1] = sample;
+    output[i*nChannels    ] = sample * volume;
+    output[i*nChannels + 1] = sample * volume;
         }
     }
 }
@@ -303,10 +322,6 @@ void ofApp::keyPressed(int key){
         
         state = 0; // manually switch states
     }
-//    if( key == ' ') {
-//        
-//        synth = !synth;
-//    }
 }
 
 //--------------------------------------------------------------
@@ -321,8 +336,6 @@ void ofApp::mouseMoved(int x, int y ){
     
     speed = ((double ) x / ofGetWidth() * 4.0) - 2.0;
     grainLength = ((double) y / ofGetHeight() * 0.1) + 0.001;
-   // pos = ((double) x / ofGetWidth() * 2.0);
-
     }
 }
 
@@ -337,8 +350,12 @@ void ofApp::mousePressed(int x, int y, int button){
     
         stateSwitch = !stateSwitch; // click in the arrow button to start the animation and then switch state
         if(state == 0) {
-        fade = true;
+            fade = !fade;
             clickedOn = true;
+            alpha = 0;
+            rotY = PI /4;
+            lLine = 400;
+            rLine = 800;
             
         }
         
@@ -347,7 +364,6 @@ void ofApp::mousePressed(int x, int y, int button){
             state = 0;
             stateSwitch = false;
             clickedOn = false;
-           // f = 0;
             
         }
    }
@@ -360,9 +376,13 @@ void ofApp::mousePressed(int x, int y, int button){
           play = !play; // play the music of you click on the play button
       }
         
-        if(mouseX >= 150 && mouseX <= 200 && mouseY >= 500 && mouseY <= 550 ) {
+        if(mouseX >= 150 && mouseX <= 200 && mouseY >= 500 && mouseY <= 550 ) { // click on the grandular sythesiser button
             
             synth = !synth;
+        }
+        if(x >= 260 && x <= 310 && y >= 500 && y <= 550){
+            vol = !vol;
+           
         }
     }
     
