@@ -141,7 +141,7 @@ void ofApp::update(){
 
 void ofApp::draw(){
     
-   std:: cout << mouseY << std::endl;
+   std:: cout << mouseX << std::endl;
     // std:: cout << fade << std::endl;
     
     if(synth == false){ // if synth is equal to false then the values goes back to normal
@@ -286,7 +286,7 @@ void ofApp::draw(){
             grand.draw(50,600); // grandular sythesis button
             mute.draw(130, 600); // mute button
              change.draw(210,600);
-            //playButton[0].draw(1100, 600); // drawing the play buttonchange.draw(210,600);
+            images[index].draw(1100, 600); // drawing the play buttonchange.draw(210,600);
              
 
              if(synth == true) {
@@ -322,18 +322,18 @@ void ofApp::draw(){
             }
             ofPopStyle();
              
-             alpha2 --; // fading in by decreaing the rectangle alpha value
-             ofPushStyle();
-             ofSetColor(0, alpha2); // back colour with changing alpha
-             ofRect(0,0,ofGetWidth(),ofGetHeight()); // drawing a rectangle of the whole screen
-             ofPopStyle();
+            alpha2 --; // fading in by decreaing the rectangle alpha value
+            ofPushStyle();
+            ofSetColor(0, alpha2); // back colour with changing alpha
+            ofRect(0,0,ofGetWidth(),ofGetHeight()); // drawing a rectangle of the whole screen
+            ofPopStyle();
              
-             if(alpha2 <= 0) { // when aplha2 is fully transparant then is will stay that way until the state switches again
+            if(alpha2 <= 0) { // when aplha2 is fully transparant then is will stay that way until the state switches again
                  
                  alpha2 = 0;
              }
              
-             if(state == 0){
+            if(state == 0){
                  alpha2 == 255; // if the state switches back then set alpha2 back to it's original position
              }
             break;
@@ -398,24 +398,26 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
     
-    if(mouseX >= 565 && mouseX <= 635 && mouseY >= 650 && mouseY <= 680 ) {
+    if(x >= 565 && x <= 635 && y >= 650 && y <= 680 ) {
     
         stateSwitch = !stateSwitch; // click in the arrow button to start the animation and then switch state
         if(state == 0) {
-            fade = !fade;
-            clickedOn = true;
-            alpha = 0;
-            rotY = PI /4;
-            lLine = 400;
-            rLine = 800;
+            
+            fade = !fade; // whent the switch state button is pressed fade goes from true to false
+            clickedOn = true; // sets clickedOn equal to true
+            alpha = 0; // set alpha back to 0
+            rotY = PI /4; // set the rotation back to PI/4
+            lLine = 400; // set lLine back to original position at 400
+            rLine = 800; // set r…ine back to original position at 800
             
         }
         
-        if(state == 1 ) {
-            alpha = 0;
-            state = 0;
-            stateSwitch = false;
-            clickedOn = false;
+        if(state == 1 ) { // if state is equal to 1
+            
+            alpha = 0; // set alpha back to 0
+            state = 0; // set state back to 0
+            stateSwitch = false; // turn stateSwitch to false
+            clickedOn = false; // turn clickedOn to false
             
         }
    }
@@ -423,7 +425,7 @@ void ofApp::mousePressed(int x, int y, int button){
     if( state == 0) { // You have to be in the fist state to be able to press the play button
         alpha2 = 255;
         
-      if(mouseX >= 585 && mouseX <= 625 && mouseY >= 335 && mouseY <= 365 ) {
+      if(x >= 585 && x <= 625 && y >= 335 && y <= 365 ) {
           
           play = !play; // play the music of you click on the play button
       }
@@ -432,17 +434,20 @@ void ofApp::mousePressed(int x, int y, int button){
             
             synth = !synth;
         }
-        if(x >= 225 && x <= 275 && y >= 500 && y <= 550){
+        if(x >= 225 && x <= 275 && y >= 500 && y <= 550){ // mute sound state 1
             vol = !vol;
            
         }
     }
     
     if( state == 1) {
-           if(mouseX >= 50 && mouseX <= 100 && mouseY >= 600 && mouseY <= 650 ) {
+           if(x >= 50 && x <= 100 && y >= 600 && y <= 650 ) { // turn on the grandular synthesiser in state 1
     
     synth = !synth;
            }
+        if(x >= 1100 && x <= 1150 && y >= 600 && y <= 650 ) {
+            play = !play;
+        }
     }
 }
 
